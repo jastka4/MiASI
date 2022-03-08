@@ -1,0 +1,7 @@
+/antlr_swing/src/tb/antlr/ExprLexer.java
+/antlr_swing/src/tb/antlr/ExprParser.java
+/antlr_swing/src/tb/antlr/interpreter/TExpr1.java
+/antlr_swing/src/tb/antlr/kompilator/TExpr3.java
+
+*.class
+*.tokens
