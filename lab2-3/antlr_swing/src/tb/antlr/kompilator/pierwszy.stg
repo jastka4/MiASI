@@ -1,0 +1,67 @@
+group pierwszy;
+
+program(expressions,declarations) ::= <<
+<declarations;separator="\n">
+start:
+<expressions;separator="\n">
+>>
+
+block(expressions,declarations) ::= <<
+  <declarations;separator="\n">
+  start:
+  <expressions;separator="\n">
+>>
+
+int(i) ::= <<
+MOV A,#<i>
+>>
+
+id(i) ::= <<
+MOV A,[<i>]
+>>
+
+if(e1, e2, e3, n) ::= <<
+<e1>
+JE label_else_<n>
+<e2>
+JMP label_endif_<n>
+label_else_<n>:
+<e3>
+label_endif_<n>:
+>>
+
+add(p1, p2) ::= <<
+<p2>
+PUSH A
+<p1>
+POP B
+ADD A,B
+>>
+
+sub(p1, p2) ::= <<
+<p2>
+PUSH A
+<p1>
+POP B
+SUB A,B
+>>
+
+mul(p1, p2) ::= <<
+<p2>
+PUSH A
+<p1>
+POP B
+MUL B
+>>
+
+div(p1, p2) ::= <<
+<p2>
+PUSH A
+<p1>
+POP B
+DIV A,B
+>>
+
+decl(n) ::= <<
+DD <n>
+>>

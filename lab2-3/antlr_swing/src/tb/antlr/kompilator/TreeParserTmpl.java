@@ -9,6 +9,7 @@ import org.antlr.runtime.tree.TreeNodeStream;
 import org.antlr.runtime.tree.TreeParser;
 
 import tb.antlr.symbolTable.GlobalSymbols;
+import tb.antlr.symbolTable.LocalSymbols;
 
 /**
  * @author tb
@@ -17,6 +18,7 @@ import tb.antlr.symbolTable.GlobalSymbols;
 public class TreeParserTmpl extends TreeParser {
 
 	protected GlobalSymbols globals = new GlobalSymbols();
+	protected LocalSymbols locals = new LocalSymbols();
 	
 	/**
 	 * @param input
@@ -38,5 +40,12 @@ public class TreeParserTmpl extends TreeParser {
 	protected void errorID(RuntimeException ex, CommonTree id) {
 		System.err.println(ex.getMessage() + " in line " + id.getLine());
 	}
+	
+	protected void enterScope() {
+		locals.enterScope();
+	}
 
+	protected void leaveScope() {
+		locals.leaveScope();
+	}
 }
