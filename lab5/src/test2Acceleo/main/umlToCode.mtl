@@ -1,0 +1,11 @@
+[comment encoding = UTF-8 /]
+[module umlToCode('http://www.eclipse.org/uml2/5.0.0/UML', 'http://www.eclipse.org/uml2/5.0.0/UML/Profile/Standard')]
+
+[import test2Acceleo::common::klasy /]
+
+[template public umlToCode(aPackage : Package)]
+[comment @main/]
+[for (aClass : Class | aPackage.packagedElement->filter(Class))]
+ 	[aClass.generateElement()/]
+ [/for]
+[/template]

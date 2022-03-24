@@ -1,0 +1,16 @@
+[comment encoding = UTF-8 /]
+[module generate('http://www.eclipse.org/uml2/5.0.0/UML')]
+
+
+[template public generateElement(aClass : Class)]
+[comment @main /]
+[file (aClass.name.concat('.java'), false, 'UTF-8')]
+	[aClass.newClassQuery().name->sep('atrybuty:\n', ',\n', ';')/]
+	[aClass.getImplementedInterfaces().name->sep('implements', ', ', '')/]
+[/file]
+
+[/template]
+
+[query public newClassQuery (aClass : Class) : OrderedSet(Property) 
+= aClass.getAssociations().navigableOwnedEnd->asOrderedSet()->addAll(aClass.getAllAttributes())->sortedBy(name.size())/]
+

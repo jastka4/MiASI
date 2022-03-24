@@ -1,0 +1,50 @@
+[comment encoding = UTF-8 /]
+[module klasy('http://www.eclipse.org/uml2/5.0.0/UML', 'http://www.eclipse.org/uml2/5.0.0/UML/Profile/Standard')]
+
+[import test2Acceleo::common::sekwencje /]
+[import test2Acceleo::common::aktywnosci/]
+
+[template public generateElement(c : Class)]
+[file (c.classFileName(), false, 'UTF-8')]
+package [c.containingPackages().name->sep('.')/];
+
+class [c.name/] [c.ext()/]
+ {
+	private:
+// Atrybuty:
+	[for (it : Property | c.ownedAttribute)]
+	[it.type.name/]	[it.name/];
+	[/for]
+	public:
+// Getters & Setters:
+	[for (it : Property | c.ownedAttribute)]
+	[it.type.name/]	get[it.name/]() { return [it.name/]; }
+	void	set[it.name/]([it.type.name/] w) { [it.name/] = w; }
+	[/for]
+// Operacje:	
+	[for (op : Operation | c.ownedOperation)]
+	[op.type.name/] [op.name/]() {
+		[putBody(op.method)/]
+	}	
+	[/for]
+	
+};
+	[/file]
+[/template]
+
+[template public ext (aClass : Class)? (not aClass.superClass->isEmpty())]
+ extends [aClass.superClass.name->sep(', ')/]
+[/template]
+
+[query public classFileName (aClass : Class) : String = 
+ aClass.qualifiedName().replaceAll('\\.','/').concat('.java')
+ /]
+
+[query public qualifiedName (aClass : Class) : String = 
+ aClass.containingPackages().name->sep('.')->including('.')->including(aClass.name)->toString()
+ /]
+
+[query public containingPackages (aClass : Class) : Sequence(Package) = 
+ aClass.ancestors(Package)->reject(oclIsKindOf(Model))->reverse()
+ /]
+

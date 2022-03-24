@@ -1,0 +1,59 @@
+[comment encoding = UTF-8 /]
+[module aktywnosci('http://www.eclipse.org/uml2/5.0.0/UML',
+ 'http://www.eclipse.org/uml2/5.0.0/UML/Profile/Standard')]
+
+[import test2Acceleo::common::sekwencje /]
+
+[template public putBody (bs : Set(Behavior)) ]
+	[for (b : Behavior | bs)]
+[if (oclIsKindOf(OpaqueBehavior))][b.oclAsType(OpaqueBehavior).putBehavior('java')/][else][putBehavior(b)/][/if]
+[comment][if (oclIsKindOf(OpaqueBehavior))][b.oclAsType(OpaqueBehavior).putBehavior('c++')/][else][putBehavior(b)/][/if][/comment]
+	[/for] 
+[/template]
+
+[template public putBehavior(e : Behavior) ]
+	[comment TODO Auto-generated template stub/]
+// Blad element: [e.eClass().name/]
+[/template]
+
+[template public putBehavior(e : StateMachine) ]
+	[comment TODO Auto-generated template stub/]
+[/template]
+
+[template public putBehavior(e : OpaqueBehavior, lang : String)? ((not language->indexOf(lang)->oclIsInvalid()) and language->indexOf(lang) > 0)]
+	[e._body->at(e.language->indexOf(lang))/]
+[/template]
+
+[template public putBehavior(e : Activity)]
+[let var : Set(InitialNode) = e.ownedNode->filter(InitialNode)]
+	[for (b : InitialNode | var)]
+[b.putActNod()/]
+	[/for]
+[/let]
+[/template]
+
+[template public putActNod(n : InitialNode)]
+[n.outgoing.target.putActNod()/]
+[/template]
+
+[template public putActNod(n : ActivityNode)]
+// Blad: Generic activity node! - [n.name/] typu [n.eClass().name/]
+[n.oclAsType(OpaqueAction)._body->at(1)/]
+[for (outg : ActivityEdge | n.outgoing)]
+[let GExp : OpaqueExpression = outg.guard]
+[if (GExp._body->size()>0 and GExp._body->at(1).size()>0)]
+if ([GExp._body->at(1)/]) {
+	[outg.target.putActNod()/]
+}
+[else][outg.target.putActNod()/][/if]
+[/let]
+[/for]
+[/template]
+
+[template public putActNod(n : ActivityFinalNode)]
+[/template]
+
+[template public putBehavior(e : InteractionOperand) ]
+	[e.fragment/]
+[/template]
+
