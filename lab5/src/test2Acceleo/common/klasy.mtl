@@ -8,28 +8,33 @@
 [file (c.classFileName(), false, 'UTF-8')]
 package [c.containingPackages().name->sep('.')/];
 
-class [c.name/] [c.ext()/]
+class [c.name/] [c.ext()/] [c.impl()/]
  {
-	private:
+[comment]	private:[/comment]
 // Atrybuty:
 	[for (it : Property | c.ownedAttribute)]
-	[it.type.name/]	[it.name/];
+	[it.visibility/] [it.type.name/] [it.name/];
 	[/for]
-	public:
+[comment]	public:[/comment]
+[comment]TODO: ask what to set here (public/private?) [/comment]
 // Getters & Setters:
 	[for (it : Property | c.ownedAttribute)]
 	[it.type.name/]	get[it.name/]() { return [it.name/]; }
-	void	set[it.name/]([it.type.name/] w) { [it.name/] = w; }
+	void set[it.name/]([it.type.name/] w) { [it.name/] = w; }
 	[/for]
 // Operacje:	
 	[for (op : Operation | c.ownedOperation)]
-	[op.type.name/] [op.name/]() {
+	[op.visibility/] [if op.type->isEmpty()]void[else][op.type.name/][/if] [op.name/]() {
 		[putBody(op.method)/]
 	}	
 	[/for]
 	
 };
 	[/file]
+[/template]
+
+[template public impl (aClass : Class)? (not aClass.getAllImplementedInterfaces()->isEmpty())]
+ implements [aClass.getAllImplementedInterfaces().name->sep(', ')/]
 [/template]
 
 [template public ext (aClass : Class)? (not aClass.superClass->isEmpty())]

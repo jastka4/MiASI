@@ -1,0 +1,49 @@
+[comment encoding = UTF-8 /]
+[module interfejsy('http://www.eclipse.org/uml2/5.0.0/UML', 'http://www.eclipse.org/uml2/5.0.0/UML/Profile/Standard')]
+
+[import test2Acceleo::common::sekwencje /]
+[import test2Acceleo::common::aktywnosci/]
+
+[template public generateElement(i : Interface)]
+[file (i.classFileName(), false, 'UTF-8')]
+package [i.containingPackages().name->sep('.')/];
+
+interface [i.name/] [i.ext()/]
+ {
+	private:
+// Atrybuty:
+	[for (it : Property | i.ownedAttribute)]
+	[it.type.name/]	[it.name/];
+	[/for]
+	public:
+// Getters & Setters:
+	[for (it : Property | i.ownedAttribute)]
+	[it.type.name/]	get[it.name/]() { return [it.name/]; }
+	void	set[it.name/]([it.type.name/] w) { [it.name/] = w; }
+	[/for]
+// Operacje:	
+	[for (op : Operation | i.ownedOperation)]
+	[op.type.name/] [op.name/]();
+	[/for]
+	
+};
+	[/file]
+[/template]
+
+[comment]TODO[/comment]
+[template public ext (aInterface : Interface)? (not aInterface.getAllUsedInterfaces()->isEmpty())]
+ extends [aInterface.getAllUsedInterfaces().name->sep(', ')/]
+[/template]
+
+[query public classFileName (aInterface : Interface) : String = 
+ aInterface.qualifiedName().replaceAll('\\.','/').concat('.java')
+ /]
+
+[query public qualifiedName (aInterface : Interface) : String = 
+ aInterface.containingPackages().name->sep('.')->including('.')->including(aInterface.name)->toString()
+ /]
+
+[query public containingPackages (aInterface : Interface) : Sequence(Package) = 
+ aInterface.ancestors(Package)->reject(oclIsKindOf(Model))->reverse()
+ /]
+
