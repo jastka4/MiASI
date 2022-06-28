@@ -1,0 +1,93 @@
+MODULE main
+
+VAR     otwarte :   boolean;
+        cyfra   :   0..9;
+        stan    :   {start, stan_1, stan_2, stan_3, stan_4};
+
+INIT    stan = start &
+        otwarte = FALSE;
+
+TRANS   next(otwarte) in case
+            next(stan) = stan_4 : TRUE;
+            TRUE : FALSE;
+        esac;
+
+TRANS   next(stan) in case
+            stan = start & next(cyfra) != 1 : start;
+            stan = start & next(cyfra) = 1 : stan_1;
+            stan = stan_1 & next(cyfra) = 1 : stan_1;
+            stan = stan_1 & next(cyfra) = 2 : stan_2;
+            stan = stan_1 & next(cyfra) != 2 : start;
+            stan = stan_2 & next(cyfra) = 1 : stan_1;
+            stan = stan_2 & next(cyfra) = 3 : stan_3;
+            stan = stan_2 & next(cyfra) != 3 : start;
+            stan = stan_3 & next(cyfra) = 1 : stan_1;
+            stan = stan_3 & next(cyfra) = 4 : stan_4;
+            stan = stan_3 & next(cyfra) != 4 : start;
+            stan = stan_4 : stan_4;
+        esac;
+
+-- Jeśli "stan" wynosi "stan_4" to zmienna "otwarte" jest zawsze true
+-- true
+CTLSPEC AG(stan = stan_4 -> otwarte = TRUE)
+
+-- Jeśli "stan" jest różny od "stan_4" to zmienna "otwarte" jest zawsze false
+-- true
+CTLSPEC AG(stan != stan_4 -> otwarte = FALSE)
+
+-- Możliwe, że kiedyś "cyfra" wynosi 1 i nie "otwarte", w następym stanie "cyfra" wynosi 2 i nie "otwarte",
+-- w następym stanie "cyfra" wynosi 3 i nie "otwarte", w następym stanie "cyfra" wynosi 4 i "otwarte"
+-- true
+CTLSPEC EF((cyfra=1 & !otwarte & EX(cyfra=2 & !otwarte & EX(cyfra=3 & !otwarte & EX(cyfra=4 & otwarte)))))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "start", zmienna "cyfra" wartość 1 oraz w kolejnym stanie "cyfra" nie będzie równa 1 to zmienna "stan" przyjmie wartość "start"
+-- true
+CTLSPEC AG(stan=start & cyfra=1 & AX(cyfra != 1) -> AX(stan=start))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "start" oraz w kolejnym stanie "cyfra" nie będzie równa 1 to zmienna "stan" przyjmie wartość "start"
+-- true
+CTLSPEC AG(stan=start & AX(cyfra!=1) -> AX(stan=start)) 
+
+-- Jeśli zmienna "stan" przyjmuje wartość "start" oraz w kolejnym stanie "cyfra" będzie równa 1 to zmienna "stan" przyjmie wartość "stan_1"
+-- true
+CTLSPEC AG(stan=start & AX(cyfra=1) -> AX(stan=stan_1)) 
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_1" oraz w kolejnym stanie "cyfra" będzie równa 2 to zmienna "stan" przyjmie wartość "stan_2"
+-- true
+CTLSPEC AG(stan=stan_1 & AX(cyfra=2) -> AX(stan=stan_2))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_1" oraz w kolejnym stanie "cyfra" będzie równa 1 to zmienna "stan" przyjmie wartość "stan_1"
+-- true
+CTLSPEC AG(stan=stan_1 & AX(cyfra=1) -> AX(stan=stan_1))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_1" oraz w kolejnym stanie "cyfra" nie będzie równa 1 lub 2 to zmienna "stan" przyjmie wartość "start"
+-- true
+CTLSPEC AG(stan=stan_1 & AX(cyfra!=1) & AX(cyfra!=2) -> AX(stan=start))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_2" oraz w kolejnym stanie "cyfra" będzie równa 3 to zmienna "stan" przyjmie wartość "stan_3"
+-- true
+CTLSPEC AG(stan=stan_2 & AX(cyfra=3) -> AX(stan=stan_3))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_2" oraz w kolejnym stanie "cyfra" będzie równa 1 to zmienna "stan" przyjmie wartość "stan_1"
+-- true
+CTLSPEC AG(stan=stan_2 & AX(cyfra=1) -> AX(stan=stan_1))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_2" oraz w kolejnym stanie "cyfra" nie będzie równa 1 lub 3 to zmienna "stan" przyjmie wartość "start"
+-- true
+CTLSPEC AG(stan=stan_2 & AX(cyfra!=1) & AX(cyfra!=3) -> AX(stan=start))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_3" oraz w kolejnym stanie "cyfra" będzie równa 4 to zmienna "stan" przyjmie wartość "stan_4"
+-- true
+CTLSPEC AG(stan=stan_3 & AX(cyfra=4) -> AX(stan=stan_4))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_3" oraz w kolejnym stanie "cyfra" będzie równa 1 to zmienna "stan" przyjmie wartość "stan_1"
+-- true
+CTLSPEC AG(stan=stan_3 & AX(cyfra=1) -> AX(stan=stan_1))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_3" oraz w kolejnym stanie "cyfra" nie będzie równa 1 lub 4 to zmienna "stan" przyjmie wartość "start"
+-- true
+CTLSPEC AG(stan=stan_3 & AX(cyfra!=1) & AX(cyfra!=4) -> AX(stan=start))
+
+-- Jeśli zmienna "stan" przyjmuje wartość "stan_4" to w każdym kolejnym stanie zmienna "stan" przyjmie wartość "stan_4"
+-- true
+CTLSPEC AG(stan=stan_4 -> AX(stan=stan_4))

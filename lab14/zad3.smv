@@ -1,0 +1,168 @@
+MODULE Swiatla3(swiatla2, przycisk)
+
+VAR     kolor   :   {zielone, zolte, czerwone, czerwone_zolte};
+        czas    :   0..99;
+
+INIT    kolor = zielone &
+        czas = 0;
+
+TRANS next(czas) in case
+        kolor = zielone & next(kolor) = zolte : 0;
+        kolor = zolte & next(kolor) = czerwone : 0;
+        kolor = czerwone & next(kolor) = czerwone_zolte : 0;
+        kolor = czerwone_zolte & next(kolor) = zielone : 0;
+        TRUE : (czas + 1) mod 100;
+    esac;
+
+TRANS next(kolor) in case
+        kolor = zielone & czas >= 59 & next(przycisk.czas) < 1 : zielone;
+        kolor = zielone & czas >= 59 & next(przycisk.czas) < 5 : {zielone, zolte};
+        kolor = zielone & czas >= 59 & next(przycisk.czas) = 5 : zolte;
+        kolor = zolte & czas = 2 : czerwone;
+        kolor = czerwone & next(swiatla2.kolor) = czerwone & next(swiatla2.czas) < 1 : czerwone;
+        kolor = czerwone & next(swiatla2.kolor) = czerwone & next(swiatla2.czas) < 2 : {czerwone, czerwone_zolte};
+        kolor = czerwone & next(swiatla2.kolor) = czerwone & next(swiatla2.czas) = 2 : czerwone_zolte;
+        TRUE : kolor;
+    esac;
+
+-- Możliwe jest, że w stanach od 100 do 120 zmienna "kolor" przyjmie wartość "zielone".
+-- true
+CTLSPEC EBF 100..120 (kolor = zielone)
+
+-- Jeśli zmienna kolor przyjmuje wartość "czerwone_zolte", a w kolejnym stanie zmienna "czas" będzie mniejsza niż 3, to zmienna "kolor" może przyjąć wartość "zielone".
+-- false
+CTLSPEC AG(kolor = czerwone_zolte & AX (czas < 3) -> EX (kolor = zielone))
+
+-- Jeśli zmienna "kolor" przyjmuje wartość "czerwone_zolte" oraz w kolejnym stanie zmienna "czas" będzie równa 3 to zmienna "kolor" przyjmie wartość zielone.
+-- true
+CTLSPEC AG(kolor = czerwone_zolte & AX (czas = 3) -> AX (kolor = zielone))
+
+-- Nie istnieje taki stan, w którym zmienna "kolor" przyjmuje wartość "czerwone", a zmienna "czas" jest większa lub równa 3.
+-- true
+CTLSPEC !EF(kolor = czerwone_zolte & czas >= 3)
+
+-- Jeśli zmienna kolor przyjmuje wartość zielone, a w kolejnym stanie zmienna czas przycisku będzie mniejsza niż 1, to zmienna kolor przyjmie wartość zielone.
+-- true
+CTLSPEC AG(kolor = zielone & AX (przycisk.czas < 1) -> AX (kolor = zielone))
+
+-- Jeśli zmienna kolor przyjmuje wartość zielone oraz w kolejnym stanie zmienna czas przycisku będzie mniejsza lub równa 1 oraz mniejsza niż 5 to zmienna kolor może przyjąć wartość zielone.
+-- true
+CTLSPEC AG(kolor = zielone & AX (przycisk.czas >= 1) & AX (przycisk.czas < 5) -> EX (kolor = zielone))
+
+-- Jeśli zmienna kolor przyjmuje wartość zielone oraz w kolejnym stanie zmienna czas przycisku będzie mniejsza lub równa 1 oraz mniejsza niż 5, to zmienna kolor przyjmie wartość zielone.
+-- false
+CTLSPEC AG(kolor = zielone & AX (przycisk.czas >= 1) & AX (przycisk.czas < 5) -> AX (kolor = zielone))
+
+-- Jeśli zmienna "kolor" przyjmuje wartość "zielone", a w kolejnym stanie zmienna "czas" przycisku będzie równa 5, a zmienna "czas" będzie większa lub równa 60, to zmienna "kolor" przyjmie wartość "zolte".
+-- true
+CTLSPEC AG(kolor = zielone & AX (przycisk.czas = 5) & AX (czas >= 60) -> AX (kolor = zolte))
+
+-- Jeśli zmienna "kolor" przyjmuje wartość zielone, a w kolejnym stanie zmienna "czas" przycisku będzie równa 5, a zmienna "czas" będzie mniejsza niż 60, to zmienna "kolor" może przyjąć wartość "zolte".
+-- false
+CTLSPEC AG(kolor = zielone & AX (przycisk.czas = 5) & AX (czas < 60) -> EX (kolor = zolte))
+
+-- Jeśli zmienna kolor przyjmuje wartość zolte, a w kolejnym stanie zmienna czas będzie mniejsza niż 3, to zmienna kolor może przyjąć wartość czerwone.
+-- false
+CTLSPEC AG(kolor = zolte & AX (czas < 3) -> EX (kolor = czerwone))
+
+-- Jeśli zmienna kolor przyjmuje wartość zolte, a w kolejnym stanie zmienna czas będzie równa 3, to zmienna kolor przyjmie wartość czerwone.
+-- true
+CTLSPEC AG(kolor = zolte & AX (czas = 3) -> AX (kolor = czerwone))
+
+-- Nie istnieje taki stan, w którym zmienna "kolor" przyjmuje wartość "zolte", a zmienna "czas" jest większa lub równa 3.
+-- true
+CTLSPEC !EF(kolor = zolte & czas >= 3)
+
+---------------------------------------------------------------------------
+MODULE Swiatla2(swiatla3)
+
+VAR     kolor   :   {czerwone, zielone};
+        czas    :   0..15;
+
+INIT    kolor = czerwone &
+        czas = 0;
+
+TRANS next(czas) in case
+        kolor = czerwone & next(kolor) = zielone : 0;
+        kolor = zielone & next(czerwone) = zielone : 0;
+        TRUE : (czas + 1) mod 16;
+    esac;
+
+TRANS next(kolor) in case
+        kolor = czerwone & next(swiatla3.kolor) = czerwone & next(swiatla3.czas) < 1 : czerwone;
+        kolor = czerwone & next(swiatla3.kolor) = czerwone & next(swiatla3.czas) < 2: {czerwone, zielone};
+        kolor = czerwone & next(swiatla3.kolor) = czerwone & next(swiatla3.czas) = 2: zielone;
+        kolor = zielone & czas = 14 : czerwone;
+        TRUE : kolor;
+    esac;
+
+-- Minimalna ścieżka pomiędzy stanem w którym wartość zmiennej "kolor" przyjmuje wartość "zielone" a stanem, w którym wartość zmiennej "kolor" przyjmuje wartość "czerwone".
+-- 1
+COMPUTE MIN[kolor = zielone, kolor = czerwone]
+
+-- Maksymalna ścieżka pomiędzy stanem w którym wartość zmiennej "kolor" przyjmuje wartość "zielone" a stanem, w którym wartość zmiennej "kolor" przyjmuje wartość "czerwone".
+-- 15
+COMPUTE MAX[kolor = zielone, kolor = czerwone]
+
+-- Jeśli zmienna "kolor" przyjmuje wartość "zielone", a w kolejnym stanie zmienna "czas" będzie mniejsza niż 15, to zmienna "kolor" może przyjąć wartość "czerwone".
+-- false
+CTLSPEC AG(kolor = zielone & AX (czas < 15) -> EX (kolor = czerwone))
+
+-- Jeśli zmienna "kolor" przyjmuje wartość "zielone", a w kolejnym stanie zmienna "czas" będzie równa 15, to zmienna "kolor" przyjmie wartość "czerwone".
+-- true
+CTLSPEC AG(kolor = zielone & AX (czas = 15) -> AX (kolor = czerwone))
+
+-- Nie istnieje taki stan, w którym zmienna "kolor" przyjmuje wartość "zielone", a zmienna "czas" jest większa lub równa 15
+-- true
+CTLSPEC !EF(kolor = zielone & czas >= 15)
+---------------------------------------------------------------------------
+MODULE Przycisk(swiatla2)
+
+VAR     wcisniety   :   boolean;
+        czas        :   0..5;
+
+INIT    wcisniety = FALSE &
+        czas = 0;
+
+TRANS next(czas) in case
+        swiatla2.kolor = czerwone & next(swiatla2.kolor) = zielone : 0;
+        wcisniety & czas < 5 : czas + 1;
+        TRUE : czas;
+    esac;
+
+TRANS next(wcisniety) in case
+        wcisniety & next(swiatla2.kolor) = zielone : FALSE;
+        !wcisniety & next(swiatla2.kolor) = czerwone : {FALSE, TRUE};
+        TRUE : wcisniety;
+    esac;
+
+-- Zmienna "czas" przyjmuje zawsze wartość 0 do momentu, w którym zmienna "wcisniety"  przyjmie wartość FALSE.
+-- true
+CTLSPEC A[czas = 0 U wcisniety = FALSE]
+--------------------------------------------------------------------------- 
+MODULE main
+
+VAR     przycisk    :   Przycisk(swiatla2);
+        swiatla2    :   Swiatla2(swiatla3);
+        swiatla3    :   Swiatla3(swiatla2, przycisk);
+
+
+-- Jeśli zmienna "kolor" przyjmuje wartość "czerwone", a w kolejnym stanie zmienna "kolor" automatu "swiatla2" przyjmie wartość "czerwone", a zmienna "czas" automatu "swiatla2" będzie równa 2, to zmienna "kolor" automatu "swiatla3" przyjmie wartość "czerwone_zolte".
+-- true
+CTLSPEC AG(swiatla3.kolor = czerwone & AX(swiatla2.kolor = czerwone) & AX(swiatla2.czas = 2) -> AX(swiatla3.kolor = czerwone_zolte))
+
+-- Jeśli zmienna "kolor" automatu "swiatla3" przyjmuje wartość "czerwone", a w kolejnym stanie zmienna "kolor" automatu "swiatla2" przyjmie wartość "czerwone", a zmienna "czas" automatu "swiatla2" będzie mniejsza niż 1, to zmienna "kolor" automatu "swiatla3" przyjmie wartość "czerwone".
+-- true
+CTLSPEC AG(swiatla3.kolor = czerwone & AX(swiatla2.kolor = czerwone) & AX(swiatla2.czas < 1) -> AX(swiatla3.kolor = czerwone))
+
+-- Jeśli zmienna "kolor" automatu "swiatla3" przyjmuje wartość "czerwone", a w kolejnym stanie zmienna "kolor" automatu "swiatla2" przyjmie wartość "czerwone", a zmienna czas automatu "swiatla2" będzie większa lub równa 1 oraz mniejsza niż 2, to zmienna "kolor" automatu "swiatla3" może przyjąć wartość "czerwone".
+-- true
+CTLSPEC AG(swiatla3.kolor = czerwone & AX(swiatla2.kolor = czerwone) & AX(swiatla2.czas >= 1) & AX(swiatla2.czas < 2) -> EX(swiatla3.kolor = czerwone))
+
+-- Jeśli zmienna "kolor" automatu "swiatla3" przyjmuje wartość "czerwone", a w kolejnym stanie zmienna "kolor" automatu "swiatla2" przyjmie wartość "czerwone", a zmienna "czas" automatu "swiatla2" będzie większa lub równa 1 oraz mniejsza niż 2, to zmienna "kolor" automatu "swiatla3" przyjmie wartość czerwone.
+-- false
+CTLSPEC AG(swiatla3.kolor = czerwone & AX(swiatla2.kolor = czerwone) & AX(swiatla2.czas >= 1) & AX(swiatla2.czas < 2) -> AX(swiatla3.kolor = czerwone))
+
+-- Jeśli wartość zmiennej kolor automatu swiatla3 przyjmuje wartość zielone, to wartość zmiennej kolor automatu swiatla2 przyjmuje wartość czerwone.
+-- true
+INVARSPEC (swiatla3.kolor = zielone -> swiatla2.kolor = czerwone)

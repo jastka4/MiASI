@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan przelaczAlarm;
+
+</declaration>
+	<template>
+		<name x="5" y="5">Czas</name>
+		<declaration>// Place local declarations here.
+clock m;
+
+</declaration>
+		<location id="id0" x="-204" y="-187">
+			<name x="-212" y="-170">G0</name>
+			<label kind="invariant" x="-212" y="-153">m &lt;= 60</label>
+		</location>
+		<location id="id1" x="0" y="-153">
+			<name x="-34" y="-153">G2</name>
+			<label kind="invariant" x="-68" y="-136">m &lt;= 60</label>
+		</location>
+		<location id="id2" x="136" y="-17">
+			<name x="126" y="-51">G4</name>
+			<label kind="invariant" x="68" y="-25">m &lt;= 60</label>
+		</location>
+		<location id="id3" x="170" y="51">
+			<name x="136" y="34">G5</name>
+			<label kind="invariant" x="102" y="51">m &lt;= 60</label>
+		</location>
+		<location id="id4" x="187" y="136">
+			<name x="153" y="110">G6</name>
+			<label kind="invariant" x="119" y="127">m &lt;= 60</label>
+		</location>
+		<location id="id5" x="170" y="289">
+			<name x="136" y="263">G8</name>
+			<label kind="invariant" x="102" y="280">m &lt;= 60</label>
+		</location>
+		<location id="id6" x="85" y="425">
+			<name x="42" y="399">G10</name>
+			<label kind="invariant" x="17" y="416">m &lt;= 60</label>
+		</location>
+		<location id="id7" x="-306" y="493">
+			<name x="-297" y="442">G14</name>
+			<label kind="invariant" x="-297" y="459">m &lt;= 60</label>
+		</location>
+		<location id="id8" x="-391" y="425">
+			<name x="-374" y="399">G15</name>
+			<label kind="invariant" x="-374" y="416">m &lt;= 60</label>
+		</location>
+		<location id="id9" x="-476" y="289">
+			<name x="-459" y="263">G17</name>
+			<label kind="invariant" x="-459" y="280">m &lt;= 60</label>
+		</location>
+		<location id="id10" x="-493" y="221">
+			<name x="-476" y="204">G18</name>
+			<label kind="invariant" x="-476" y="221">m &lt;= 60</label>
+		</location>
+		<location id="id11" x="-493" y="136">
+			<name x="-476" y="110">G19</name>
+			<label kind="invariant" x="-476" y="127">m &lt;= 60</label>
+		</location>
+		<location id="id12" x="-476" y="51">
+			<name x="-459" y="34">G20</name>
+			<label kind="invariant" x="-459" y="51">m &lt;= 60</label>
+		</location>
+		<location id="id13" x="-442" y="-17">
+			<name x="-425" y="-42">G21</name>
+			<label kind="invariant" x="-425" y="-25">m &lt;= 60</label>
+		</location>
+		<location id="id14" x="-102" y="527">
+			<name x="-110" y="476">G12</name>
+			<label kind="invariant" x="-136" y="493">m &lt;= 60</label>
+		</location>
+		<location id="id15" x="-306" y="-153">
+			<name x="-289" y="-153">G23</name>
+			<label kind="invariant" x="-289" y="-136">m &lt;= 60</label>
+		</location>
+		<location id="id16" x="0" y="493">
+			<name x="-34" y="442">G11</name>
+			<label kind="invariant" x="-60" y="459">m &lt;= 60</label>
+		</location>
+		<location id="id17" x="-391" y="-85">
+			<name x="-374" y="-102">G22</name>
+			<label kind="invariant" x="-374" y="-85">m &lt;= 60</label>
+		</location>
+		<location id="id18" x="85" y="-85">
+			<name x="42" y="-102">G3</name>
+			<label kind="invariant" x="8" y="-85">m &lt;= 60</label>
+		</location>
+		<location id="id19" x="187" y="221">
+			<name x="153" y="195">G7</name>
+			<label kind="invariant" x="119" y="212">m &lt;= 10</label>
+		</location>
+		<location id="id20" x="136" y="357">
+			<name x="102" y="331">G9</name>
+			<label kind="invariant" x="68" y="348">m &lt;= 60</label>
+		</location>
+		<location id="id21" x="-102" y="-187">
+			<name x="-110" y="-170">G1</name>
+			<label kind="invariant" x="-144" y="-153">m &lt;= 60</label>
+		</location>
+		<location id="id22" x="-204" y="527">
+			<name x="-212" y="476">G13</name>
+			<label kind="invariant" x="-212" y="493">m &lt;= 60</label>
+		</location>
+		<location id="id23" x="-442" y="357">
+			<name x="-425" y="331">G16</name>
+			<label kind="invariant" x="-425" y="348">m &lt;= 60</label>
+		</location>
+		<location id="id24" x="374" y="221">
+			<name x="391" y="187">G7_10</name>
+			<label kind="invariant" x="391" y="204">m &lt;= 15</label>
+		</location>
+		<location id="id25" x="374" y="289">
+			<name x="391" y="263">G7_15</name>
+			<label kind="invariant" x="391" y="280">m &lt;= 60</label>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id5"/>
+			<label kind="guard" x="246" y="297">m == 60</label>
+			<label kind="assignment" x="246" y="314">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id24"/>
+			<label kind="guard" x="229" y="187">m == 10</label>
+			<label kind="synchronisation" x="229" y="204">przelaczAlarm!</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id19"/>
+			<label kind="guard" x="195" y="153">m == 60</label>
+			<label kind="assignment" x="195" y="170">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id25"/>
+			<label kind="guard" x="314" y="238">m == 15</label>
+			<label kind="synchronisation" x="272" y="255">przelaczAlarm!</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-288" y="-204">m == 60</label>
+			<label kind="assignment" x="-289" y="-187">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-391" y="-153">m == 60</label>
+			<label kind="assignment" x="-391" y="-136">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-467" y="-76">m == 60</label>
+			<label kind="assignment" x="-467" y="-59">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-527" y="-8">m == 60</label>
+			<label kind="assignment" x="-527" y="8">m = 0</label>
+			<label kind="testcode">m &lt;= 60</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-544" y="76">m == 60</label>
+			<label kind="assignment" x="-544" y="93">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-552" y="161">m == 60</label>
+			<label kind="assignment" x="-552" y="178">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id10"/>
+			<label kind="guard" x="-544" y="246">m == 60</label>
+			<label kind="assignment" x="-544" y="263">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-518" y="314">m == 60</label>
+			<label kind="assignment" x="-518" y="331">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id23"/>
+			<label kind="guard" x="-467" y="391">m == 60</label>
+			<label kind="assignment" x="-467" y="408">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-399" y="459">m == 60</label>
+			<label kind="assignment" x="-399" y="476">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-289" y="518">m == 60</label>
+			<label kind="assignment" x="-289" y="535">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id22"/>
+			<label kind="guard" x="-178" y="535">m == 60</label>
+			<label kind="assignment" x="-178" y="552">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-51" y="510">m == 60</label>
+			<label kind="assignment" x="-51" y="527">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id16"/>
+			<label kind="guard" x="51" y="450">m == 60</label>
+			<label kind="assignment" x="51" y="467">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id6"/>
+			<label kind="guard" x="119" y="382">m == 60</label>
+			<label kind="assignment" x="119" y="399">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id20"/>
+			<label kind="guard" x="161" y="306">m == 60</label>
+			<label kind="assignment" x="161" y="323">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="187" y="68">m == 60</label>
+			<label kind="assignment" x="187" y="85">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="161" y="-8">m == 60</label>
+			<label kind="assignment" x="161" y="8">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id2"/>
+			<label kind="guard" x="119" y="-85">m == 60</label>
+			<label kind="assignment" x="119" y="-68">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id18"/>
+			<label kind="guard" x="34" y="-161">m == 60</label>
+			<label kind="assignment" x="34" y="-144">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-68" y="-212">m == 60</label>
+			<label kind="assignment" x="-68" y="-195">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id21"/>
+			<label kind="guard" x="-187" y="-229">m == 60</label>
+			<label kind="assignment" x="-187" y="-212">m = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Alarm</name>
+		<location id="id26" x="0" y="0">
+			<name x="-10" y="-34">CISZA</name>
+		</location>
+		<location id="id27" x="255" y="0">
+			<name x="245" y="-34">ALARM</name>
+		</location>
+		<init ref="id26"/>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="85" y="34">przelaczAlarm?</label>
+			<nail x="255" y="42"/>
+			<nail x="255" y="51"/>
+			<nail x="0" y="51"/>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="85" y="-17">przelaczAlarm?</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+// List one or more processes to be composed into a system.
+system Czas, Alarm;
+    </system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment>Czy nigdy nie zajdzie deadlock?</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Alarm.ALARM</formula>
+			<comment>Czy alarm zostanie kiedyś odpalony?</comment>
+		</query>
+		<query>
+			<formula>A[] Czas.m == 0</formula>
+			<comment>Czy minuty zawsze wynoszą 0?</comment>
+		</query>
+		<query>
+			<formula>A[] Alarm.ALARM imply (Czas.G7_10 and Czas.m &gt;= 10 and Czas.m &lt;= 15)</formula>
+			<comment>#1 Czy alarm trwa na pewno tylko od 7:10 do 7:15?</comment>
+		</query>
+		<query>
+			<formula>A[] (Czas.G7_10 and Czas.m &gt;= 10 and Czas.m &lt;= 15) imply Alarm.ALARM</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] Alarm.CISZA imply !Czas.G7_10</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula> A[] Alarm.CISZA imply Czas.m &gt;= 10 &amp;&amp; Czas.m &lt;= 15</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula> A[] Alarm.CISZA imply !(Czas.m &gt;= 10) &amp;&amp; !(Czas.m &lt;= 15)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] (Czas.G7_10 and Czas.m &gt;= 10 and Czas.m &lt;= 15) imply !Alarm.CISZA</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] Alarm.CISZA imply (not Czas.G7_10 and (Czas.m &lt; 10 or Czas.m &gt; 15))</formula>
+			<comment>#2 Czy alarm trwa zawsze tylko od 7:10 do 7:15?
+
+not Czas.G7_10 or Czas.m &lt; 10 or Czas.m &gt; 15
+
+można zamienić na regułę osiągalności ze --&gt;</comment>
+		</query>
+		<query>
+			<formula>A[] Alarm.CISZA imply (not Czas.G7_10 and (Czas.m &lt; 10 or Czas.m &gt; 15))</formula>
+			<comment>#2 Czy alarm trwa zawsze tylko od 7:10 do 7:15?
+
+not Czas.G7_10 or Czas.m &lt; 10 or Czas.m &gt; 15
+
+można zamienić na regułę osiągalności ze --&gt;</comment>
+		</query>
+		<query>
+			<formula>A[] Czas.G7_10 imply Czas.m &gt;= 10 &amp;&amp; Czas.m &lt;= 15</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Alarm.CISZA and Czas.m == 10</formula>
+			<comment>#3 Czy alarm trwa zawsze tylko od 7:10 do 7:15?</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Alarm.CISZA and Czas.m == 15</formula>
+			<comment>#4 Czy alarm trwa zawsze tylko od 7:10 do 7:15?</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Alarm.ALARM and Czas.m == 10</formula>
+			<comment>#5 Czy alarm trwa zawsze tylko od 7:10 do 7:15?</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Alarm.ALARM and Czas.m == 15</formula>
+			<comment>#6 Czy alarm trwa zawsze tylko od 7:10 do 7:15?</comment>
+		</query>
+		<query>
+			<formula>Alarm.ALARM --&gt; Alarm.CISZA</formula>
+			<comment>#7 Czy alarm trwa zawsze tylko od 7:10 do 7:15?</comment>
+		</query>
+		<query>
+			<formula>A[] Alarm.CISZA imply not Alarm.ALARM</formula>
+			<comment>Czy zawsze jeśli jest cisza to nie dzwoni alarm?</comment>
+		</query>
+		<query>
+			<formula>Czas.G0 --&gt; Czas.G23</formula>
+			<comment>Czy zegar wykona pełen obrót?
+
+AG(Czas.G0 --&gt; AF Czas.G23)</comment>
+		</query>
+		<query>
+			<formula>Czas.m == 60 --&gt; Czas.m == 0</formula>
+			<comment>#1 czy każda godzina trwa dokładnie 60 minut?
+
+AG(Czas.m == 60 --&gt; AF Czas.m == 0)</comment>
+		</query>
+		<query>
+			<formula>A[] Czas.m &gt;= 0 and Czas.m &lt;= 60</formula>
+			<comment>#2 czy każda godzina trwa dokładnie 60 minut?</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Czas.m == 60</formula>
+			<comment>#3 czy każda godzina trwa dokładnie 60 minut?
+
+EF Czas.m == 60</comment>
+		</query>
+	</queries>
+</nta>

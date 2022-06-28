@@ -1,0 +1,146 @@
+MODULE main
+
+FROZENVAR   number  :   0..8;
+
+VAR     factorial   :   {1, 2, 6, 24, 120, 720};
+        sigma       :   0..5;
+        primes      :   0..4;   
+        label       :   1..11;
+        j           :   3..9;
+        i           :   1..7;
+        x           :   0..6;
+        counter     :   0..6;
+
+INIT    factorial = 1 &
+        sigma = 0 &
+        primes = 0 &
+        label = 1 &
+        j = 3 &
+        i = 1 &
+        x = 0 &
+        counter = 0;
+
+DEFINE
+    begin := label = 1;
+    end := label in 9..11;
+
+TRANS
+    next(label) in case
+        label = 1 & number > 2 : 2;
+        label = 1 & number <= 2 : 11;
+        label = 2 & j <= number : 3;
+        label = 2 & j > number : 7;
+        label = 3 : 4;
+        label = 4 & x < j - 2 : 5;
+        label = 4 & x >= j - 2 : 6;
+        label = 5 : 4;
+        label = 6 : 2;
+        label = 7 : 8;
+        label = 8 & number = 3 : 9;
+        label = 8 & number != 3 : 10;
+        TRUE : label;
+    esac;
+
+TRANS 
+    next(factorial) in case
+        label = 2 & next(label) = 3 : 1;
+        label = 4 & next(label) = 5 : factorial * i;
+        TRUE : factorial;
+    esac;
+
+TRANS 
+    next(sigma) in case
+        next(label) = 6 : sigma + (factorial - (j * (factorial / j)));
+        TRUE : sigma;
+    esac;
+
+TRANS 
+    next(primes) in case
+        next(label) = 7 : -1 + sigma;
+        TRUE : primes;
+    esac;
+    
+TRANS 
+    next(j) in case
+        label = 1 & next(label) = 2 : 3;
+        label = 6 & next(label) = 2 : j + 1;
+        TRUE : j;
+    esac;
+
+TRANS 
+    next(i) in case
+        label = 2 & next(label) = 3 : 1;
+        label = 5 & next(label) in {4, 6} : i + 1;
+        TRUE : i;
+    esac;
+
+TRANS 
+    next(x) in case
+        label = 3 & next(label) = 4 : 0;
+        label = 5 & next(label) = 4 : x + 1;
+        TRUE : x;
+    esac;
+
+TRANS 
+    next(counter) in case
+        next(label) = 3 : counter + 1;
+        TRUE : counter;
+    esac;
+
+-- Jeśli number jest w przedziale 0 do 2 to zawsze kiedyś label wyniesie 11
+-- (linia drukująca napis "wrong number")
+-- Wynik: true
+CTLSPEC number in 0..2 -> AF(label = 11)
+
+-- Najmniejsza liczba liczb pierwszych dla number w przedziale 3 do 8:
+-- Minimalna liczba stanów dla number w przedziale 3 do 8
+-- 10
+COMPUTE MIN [number in 3..8 & begin, number in 3..8 & end] 
+
+--   -> State: 1.9 <-
+--     label = 7
+--   -> State: 1.10 <-
+--     label = 8
+--   -> State: 1.11 <-
+--     label = 9
+--     end = TRUE
+-- false
+-- Jeśli number wynosi 3 to niemożliwe jest, że w po 10 stanach dojdziemy do końca
+CTLSPEC number = 3 -> !EBF 10..10 (end)
+
+-- Największa liczba liczb pierwszych dla number w przedziale 3 do 8:
+-- Maksymalna liczba stanów dla number w przedziale 3 do 8
+COMPUTE MAX [number in 3..8 & begin, number in 3..8 & end] -- 70
+
+--   -> State: 2.69 <-
+--     primes = 4
+--     label = 7
+--   -> State: 2.70 <-
+--     label = 8
+--   -> State: 2.71 <-
+--     label = 10
+--     end = TRUE
+-- false
+-- Jeśli number wynosi 8 to niemożliwe jest, że w po 70 stanach dojdziemy do końca
+CTLSPEC number = 8 -> !EBF 70..70 (end)
+
+-- Minimalna liczba stanów dla number wynoszącego 6
+-- 40
+COMPUTE MIN [number = 6 & begin, number = 6 & end]
+
+--   -> State: 3.27 <-
+--     factorial = 1
+--     label = 3
+--     i = 1
+--     counter = 4
+-- false
+-- Jeśli number wynosi 6 to niemożliwe jest, że w po 40 stanach dojdziemy do końca
+CTLSPEC number = 6 -> !EBF 40..40 (end)
+
+-- Jeśli number wynosi 6 to counter zawsze kiedyś będzie równy
+-- true
+CTLSPEC number = 6 -> AF(counter = 4)
+
+-- Jeśli number wynosi 6 to counter zawsze jest mniejszy bądź równy 4
+-- true
+CTLSPEC number = 6 -> AG(counter <= 4)

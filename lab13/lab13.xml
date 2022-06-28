@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+const int liczbaPolaczen = 2;
+const int t2 = 20;
+
+chan prosbaOPolaczenieZSesja[liczbaPolaczen];
+chan rozlaczZSesja[liczbaPolaczen];
+broadcast chan polaczZSesja[liczbaPolaczen];
+
+clock czasSesji[liczbaPolaczen];
+</declaration>
+	<template>
+		<name x="5" y="5">Serwer</name>
+		<declaration>// Place local declarations here.
+int[1, liczbaPolaczen] id;</declaration>
+		<location id="id0" x="-76" y="0">
+			<name x="-86" y="-34">Czeka</name>
+		</location>
+		<location id="id1" x="195" y="0">
+			<name x="185" y="-34">Polaczono</name>
+			<committed/>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="0" y="34">polaczZSesja[id-1]!</label>
+			<nail x="195" y="59"/>
+			<nail x="-76" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="select" x="-34" y="-59">n: int[1, liczbaPolaczen]</label>
+			<label kind="synchronisation" x="-34" y="-42">prosbaOPolaczenieZSesja[n-1]?</label>
+			<label kind="assignment" x="-34" y="-25">id = n</label>
+		</transition>
+	</template>
+	<template>
+		<name>Sesja</name>
+		<parameter>const int[1,liczbaPolaczen] n</parameter>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id2" x="-93" y="0">
+			<name x="-144" y="-25">Czeka</name>
+		</location>
+		<location id="id3" x="119" y="0">
+			<name x="136" y="-25">PolaczenieZestawione</name>
+			<label kind="invariant" x="136" y="-8">czasSesji[n-1] &lt;= t2</label>
+		</location>
+		<init ref="id2"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-51" y="-93">rozlaczZSesja[n-1]?</label>
+			<nail x="119" y="-68"/>
+			<nail x="-93" y="-68"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-51" y="17">czasSesji[n-1] &gt;= t2</label>
+			<label kind="synchronisation" x="-51" y="34">rozlaczZSesja[n-1]!</label>
+			<nail x="119" y="59"/>
+			<nail x="-93" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-42" y="-42">polaczZSesja[n-1]?</label>
+			<label kind="assignment" x="-42" y="-25">czasSesji[n-1] = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Klient</name>
+		<parameter>const int[1,liczbaPolaczen] n</parameter>
+		<declaration>// Place local declarations here.
+int[1,t2] t1;
+</declaration>
+		<location id="id4" x="-68" y="0">
+			<name x="-51" y="-42">Rozlaczony</name>
+		</location>
+		<location id="id5" x="195" y="0">
+			<name x="178" y="-34">Czeka</name>
+		</location>
+		<location id="id6" x="382" y="0">
+			<name x="391" y="-34">Polaczony</name>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id4"/>
+			<label kind="guard" x="93" y="-144">czasSesji[n-1] &gt;= t1</label>
+			<label kind="synchronisation" x="93" y="-127">rozlaczZSesja[n-1]!</label>
+			<nail x="382" y="-102"/>
+			<nail x="-68" y="-102"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="93" y="59">rozlaczZSesja[n-1]?</label>
+			<nail x="382" y="85"/>
+			<nail x="-68" y="85"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="select" x="229" y="-59">x:int[1,t2-1]</label>
+			<label kind="synchronisation" x="229" y="-25">polaczZSesja[n-1]?</label>
+			<label kind="assignment" x="229" y="-42">t1 = x</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-51" y="-25">prosbaOPolaczenieZSesja[n -1]!</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+// List one or more processes to be composed into a system.
+system Serwer, Sesja, Klient;
+    </system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment>Czy nigdy nie zajdzie deadlock?</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; forall(i:int[1,liczbaPolaczen]) Klient(i).Polaczony</formula>
+			<comment>Czy możliwe jest, żeby każdy klient był kiedyś połączony?</comment>
+		</query>
+		<query>
+			<formula>Sesja(1).PolaczenieZestawione and Klient(1).Polaczony --&gt; Sesja(1).Czeka and Klient(1).Rozlaczony</formula>
+			<comment>Czy połączenie klient-sesja na pewno się zakończy?</comment>
+		</query>
+		<query>
+			<formula>A[] forall(i:int[1,liczbaPolaczen]) (Klient(i).Polaczony imply Sesja(i).PolaczenieZestawione)</formula>
+			<comment>Czy na pewno zawsze dla każdego połączonego klienta istnieje połączenie z sesją?</comment>
+		</query>
+		<query>
+			<formula>A[] forall(i:int[1,liczbaPolaczen]) forall(j:int[1,liczbaPolaczen]) Klient(i).Polaczony and Klient(j).Polaczony imply i==j</formula>
+			<comment>Czy połączenie klient-sesja jest możliwe dla wszystkich klientów na raz?</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; exists(i: int[1, liczbaPolaczen]) (Klient(i).Polaczony and czasSesji[i-1] &gt; t2) or (Sesja(i).PolaczenieZestawione and czasSesji[i-1] &gt; t2)</formula>
+			<comment>Czy istnieje połączony z sesją klient, którego czas połączenia przekroczył t2?</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; forall(i:int[1,liczbaPolaczen]) (Klient(i).Polaczony imply czasSesji[i-1] &gt;= Klient(i).t1)</formula>
+			<comment>Czy na pewno w końcu dla każdego połaczonego klienta, czas połączenia będzie większy niż t1?</comment>
+		</query>
+		<query>
+			<formula>A[] forall(i:int[1,liczbaPolaczen]) forall(j:int[1,liczbaPolaczen]) Klient(i).Czeka and Klient(j).Czeka imply i == j</formula>
+			<comment>Czy na pewno zawsze na sesję może oczekiwać jednocześnie tylko jeden klient?</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; forall(i:int[1,liczbaPolaczen]) Serwer.Polaczono and Klient(i).Czeka</formula>
+			<comment>Czy możliwe jest, żeby serwer był kiedyś w stanie obsługiwania wszystkich klientów na raz?</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; forall(i:int[1,liczbaPolaczen]) Klient(i).Rozlaczony and (czasSesji[i-1] &lt; Klient(i).t1 and Klient(i).t1 != 0)</formula>
+			<comment>Czy możliwe jest, że kiedyś któryś klient rozłączy się i jego czas połączenia był mniejszy od wybranego wcześniej t1, gdy t1 jest różne od 0?</comment>
+		</query>
+	</queries>
+</nta>
